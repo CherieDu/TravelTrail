@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Users/ChunyueDu/Documents/AndroidStudioWorkSpace/TravelTrail/ParseLoginUI/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.0.1/res/values-kn/values.xml -->
+    <!-- From: file:/Users/ChunyueDu/Dropbox/CMU/Courses/2015%20Summer/18-641Java%20Smartphone/mini%202/project2/Git/TravelTrail/TravelTrail/ParseLoginUI/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.0.1/res/values-kn/values.xml -->
     <eat-comment/>
     <string name="messenger_send_button_text">ಕಳುಹಿಸು</string>
 </resources>

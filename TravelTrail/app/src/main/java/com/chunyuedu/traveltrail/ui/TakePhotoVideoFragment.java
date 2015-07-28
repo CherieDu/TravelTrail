@@ -47,7 +47,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
     private ImageView imgPreview;
     private VideoView videoPreview;
-    private Button btnCapturePicture, btnRecordVideo;
+
 
 
     @Override
@@ -65,6 +65,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
         imgPreview = (ImageView) v.findViewById(R.id.imgPreview);
         videoPreview = (VideoView) v.findViewById(R.id.videoPreview);
+        Button btnCapturePicture, btnRecordVideo;
         btnCapturePicture = (Button) v.findViewById(R.id.takePhotoBtn);
         btnRecordVideo = (Button) v.findViewById(R.id.recordVideoBtn);
 
@@ -223,7 +224,7 @@ public class TakePhotoVideoFragment extends Fragment {
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
-                Log.d("MyCameraApp", "failed to create directory");
+                Log.d("TravelTrail", "failed to create directory");
                 return null;
             }
         }

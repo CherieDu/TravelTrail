@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 //        ParseObject testObject = new ParseObject("TestObject");
 //        testObject.put("foo", "bar");
 //        testObject.saveInBackground();
-        ParseUser.logOut();
+//        ParseUser.logOut();
         ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
 //        ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser == null){
@@ -108,7 +109,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -126,6 +130,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         if (id == R.id.action_marker) {
             Intent marker =
                     new Intent(MainActivity.this, MarkerActivity.class);
+            startActivity(marker); // start the AddEditContact Activity
+            return true;
+        }
+        if (id == R.id.action_map) {
+            Intent marker =
+                    new Intent(MainActivity.this, MapsActivity.class);
             startActivity(marker); // start the AddEditContact Activity
             return true;
         }

@@ -3,6 +3,7 @@ package com.chunyuedu.traveltrail.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -52,18 +53,17 @@ public class MapsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_maps, container, false);
-
-
-        return v;
 
     }
+
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        // Inflate the layout for this fragment
+////        startActivity(new Intent(getActivity(), MapsActivity.class));
+//        return inflater.inflate(R.layout.fragment_maps, container, false);
+//
+//    }
 
 
 
