@@ -22,6 +22,9 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.chunyuedu.traveltrail.R;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -78,7 +81,10 @@ public class TakePhotoVideoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // capture picture
-                captureImage();
+                Uri imageUri = captureImage();
+                Log.i("btnCapturePicture", imageUri.toString());
+
+
             }
         });
 
@@ -136,7 +142,7 @@ public class TakePhotoVideoFragment extends Fragment {
         }
     }
 
-    private void captureImage(){
+    private Uri captureImage(){
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -145,6 +151,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
         // start the image capture Intent
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        return fileUri;
     }
 
     /*
@@ -164,7 +171,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
 
 
-    private void recordVideo(){
+    private Uri recordVideo(){
         //create new Intent
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
@@ -175,6 +182,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
         // start the Video Capture Intent
         startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+        return fileUri;
     }
 
 
@@ -183,6 +191,12 @@ public class TakePhotoVideoFragment extends Fragment {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 previewCapturedImage();
+
+                saveImageMarker();
+
+
+
+
                 // Image captured and saved to fileUri specified in the Intent
 //                Toast.makeText(getActivity(), "Image saved to:\n" +
 //                        data.getData(), Toast.LENGTH_LONG).show();
@@ -205,6 +219,33 @@ public class TakePhotoVideoFragment extends Fragment {
                 // Video capture failed, advise user
             }
         }
+    }
+
+    private void saveImageMarker(){
+        // bimatp factory
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        // downsizing image as it throws OutOfMemory Exception for larger
+        // images
+        options.inSampleSize = 8;
+
+        final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
+                options);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] data2 = stream.toByteArray();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        ParseFile file = new ParseFile("IMG_" + timeStamp + ".jpg", data2);
+        file.saveInBackground();
+
+
+        ParseObject marker = new ParseObject("Marker");
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        marker.put("mediatype", "image");
+        marker.put("username",currentUser.getUsername());
+        marker.put("mediaurl", file);
+
+        marker.saveInBackground();
     }
 
     /** Create a file Uri for saving an image or video */
