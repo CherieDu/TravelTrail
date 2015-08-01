@@ -102,8 +102,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), IMAGE_DIRECTORY_NAME);
+//        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_PICTURES), IMAGE_DIRECTORY_NAME);
 
 
 

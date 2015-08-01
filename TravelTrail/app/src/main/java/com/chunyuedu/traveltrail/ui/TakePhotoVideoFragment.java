@@ -7,6 +7,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Camera;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +26,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.chunyuedu.traveltrail.R;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -31,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -238,12 +244,25 @@ public class TakePhotoVideoFragment extends Fragment {
         ParseFile file = new ParseFile("IMG_" + timeStamp + ".jpg", data2);
         file.saveInBackground();
 
+        LocationManager locationManager;
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+
+
+// Getting Current Location and add a marker
+        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        double currentLatitude = location.getLatitude();
+        double currentLongitude = location.getLongitude();
+
 
         ParseObject marker = new ParseObject("Marker");
         ParseUser currentUser = ParseUser.getCurrentUser();
         marker.put("mediatype", "image");
         marker.put("username",currentUser.getUsername());
         marker.put("mediaurl", file);
+        marker.put("currentLatitude", currentLatitude);
+        marker.put("currentLongitude", currentLongitude);
+
 
         marker.saveInBackground();
     }
@@ -315,7 +334,6 @@ public class TakePhotoVideoFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
     /*
  * Previewing recorded video
  */
