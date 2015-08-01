@@ -62,8 +62,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             ParseLoginBuilder builder = new ParseLoginBuilder(MainActivity.this);
             startActivityForResult(builder.build(), 0);
 
-
-
         }
 
 

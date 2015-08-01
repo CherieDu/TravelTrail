@@ -50,6 +50,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,7 +209,9 @@ public class TakePhotoVideoFragment extends Fragment {
 
     /** Create a file Uri for saving an image or video */
     private static Uri getOutputMediaFileUri(int type){
-        return Uri.fromFile(getOutputMediaFile(type));
+        Uri tmpuri = Uri.fromFile(getOutputMediaFile(type));
+        Log.i("saved to path", tmpuri.toString());
+        return tmpuri;
     }
 
     /** Create a File for saving an image or video */
