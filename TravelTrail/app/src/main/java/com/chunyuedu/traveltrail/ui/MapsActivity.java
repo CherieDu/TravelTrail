@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.chunyuedu.traveltrail.R;
+import com.chunyuedu.traveltrail.entities.Marker;
 import com.chunyuedu.traveltrail.entities.Person;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -70,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String provider;
     private static final String IMAGE_DIRECTORY_NAME = "TravelTrail";
 
-    private ClusterManager<Person> mClusterManager;
+    private ClusterManager<Marker> mClusterManager;
     private Random mRandom = new Random(1984);
 
 
@@ -286,10 +287,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
 
     protected void startDemo() {
-        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(40.4435262, -79.9444015), 9.5f));
 
-        mClusterManager = new ClusterManager<Person>(this, getMap());
-        mClusterManager.setRenderer(new PersonRenderer());
+
+        setUpMap();
+
+        List<ParseObject> results = getMarkers();
+        Log.i("Size of Markers", Integer.toString(results.size()));
+
+
+//        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(40.4435262, -79.9444015), 9.5f));
+
+        mClusterManager = new ClusterManager<Marker>(this, getMap());
+        mClusterManager.setRenderer(new MarkerRenderer());
         getMap().setOnCameraChangeListener(mClusterManager);
         getMap().setOnMarkerClickListener(mClusterManager);
         getMap().setOnInfoWindowClickListener(mClusterManager);
@@ -298,7 +307,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        mClusterManager.setOnClusterItemClickListener(this);
 //        mClusterManager.setOnClusterItemInfoWindowClickListener(this);
 
-        addItems();
+//        addItems();
+
+        for (ParseObject parseObject : results){
+            double theLat = parseObject.getDouble("currentLatitude");
+            double theLon = parseObject.getDouble("currentLongitude");
+            LatLng theLatLng = new LatLng(theLat, theLon);
+            mClusterManager.addItem(new Marker(theLatLng, "Walter", R.drawable.walter));
+        }
+
+
         mClusterManager.cluster();
     }
 
@@ -323,15 +341,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+
+
+        LatLng latLng = null;
+        latLng = new LatLng(currentLatitude, currentLongitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         MarkerOptions options = new MarkerOptions().position(latLng);
         mMap.addMarker(options);
-
-        mMap.setMyLocationEnabled(true);
-
-
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+//        mMap.setMyLocationEnabled(true);
+//
+//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        Criteria criteria = new Criteria();
+//
+//        // Getting the name of the best provider
+//        provider = locationManager.getBestProvider(criteria, true);
+//
+//        // Getting Current Location and add a marker
+//        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//        double currentLatitude = location.getLatitude();
+//        double currentLongitude = location.getLongitude();
+//        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+//        MarkerOptions options = new MarkerOptions().position(latLng);
+//        mMap.addMarker(options);
+//
+//        mMap.setMyLocationEnabled(true);
+//
+//
+//        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
     protected int getLayoutId() {
@@ -347,14 +384,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Draws profile photos inside markers (using IconGenerator).
      * When there are multiple people in the cluster, draw multiple photos (using MultiDrawable).
      */
-    private class PersonRenderer extends DefaultClusterRenderer<Person> {
+    private class MarkerRenderer extends DefaultClusterRenderer<Marker> {
         private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
         private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
         private final ImageView mImageView;
         private final ImageView mClusterImageView;
         private final int mDimension;
 
-        public PersonRenderer() {
+        public MarkerRenderer() {
             super(getApplicationContext(), getMap(), mClusterManager);
 
             View multiProfile = getLayoutInflater().inflate(R.layout.multi_profile, null);
@@ -370,26 +407,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         @Override
-        protected void onBeforeClusterItemRendered(Person person, MarkerOptions markerOptions) {
+        protected void onBeforeClusterItemRendered(Marker marker, MarkerOptions markerOptions) {
             // Draw a single person.
             // Set the info window to show their name.
-            mImageView.setImageResource(person.profilePhoto);
+            mImageView.setImageResource(marker.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(person.name);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(marker.fileName);
         }
 
         @Override
-        protected void onBeforeClusterRendered(Cluster<Person> cluster, MarkerOptions markerOptions) {
+        protected void onBeforeClusterRendered(Cluster<Marker> cluster, MarkerOptions markerOptions) {
             // Draw multiple people.
             // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
             List<Drawable> profilePhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
             int width = mDimension;
             int height = mDimension;
 
-            for (Person p : cluster.getItems()) {
+            for (Marker m : cluster.getItems()) {
                 // Draw 4 at most.
                 if (profilePhotos.size() == 4) break;
-                Drawable drawable = getResources().getDrawable(p.profilePhoto);
+                Drawable drawable = getResources().getDrawable(m.profilePhoto);
                 drawable.setBounds(0, 0, width, height);
                 profilePhotos.add(drawable);
             }
@@ -414,31 +451,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void addItems() {
         // http://www.flickr.com/photos/sdasmarchives/5036248203/
-        mClusterManager.addItem(new Person(position(), "Walter", R.drawable.walter));
+        mClusterManager.addItem(new Marker(position(), "Walter", R.drawable.walter));
 
         // http://www.flickr.com/photos/usnationalarchives/4726917149/
-        mClusterManager.addItem(new Person(position(), "Gran", R.drawable.gran));
+        mClusterManager.addItem(new Marker(position(), "Gran", R.drawable.gran));
 
         // http://www.flickr.com/photos/nypl/3111525394/
-        mClusterManager.addItem(new Person(position(), "Ruth", R.drawable.ruth));
+        mClusterManager.addItem(new Marker(position(), "Ruth", R.drawable.ruth));
 
         // http://www.flickr.com/photos/smithsonian/2887433330/
-        mClusterManager.addItem(new Person(position(), "Stefan", R.drawable.stefan));
+        mClusterManager.addItem(new Marker(position(), "Stefan", R.drawable.stefan));
 
         // http://www.flickr.com/photos/library_of_congress/2179915182/
-        mClusterManager.addItem(new Person(position(), "Mechanic", R.drawable.mechanic));
+        mClusterManager.addItem(new Marker(position(), "Mechanic", R.drawable.mechanic));
 
         // http://www.flickr.com/photos/nationalmediamuseum/7893552556/
-        mClusterManager.addItem(new Person(position(), "Yeats", R.drawable.yeats));
+        mClusterManager.addItem(new Marker(position(), "Yeats", R.drawable.yeats));
 
         // http://www.flickr.com/photos/sdasmarchives/5036231225/
-        mClusterManager.addItem(new Person(position(), "John", R.drawable.john));
+        mClusterManager.addItem(new Marker(position(), "John", R.drawable.john));
 
         // http://www.flickr.com/photos/anmm_thecommons/7694202096/
-        mClusterManager.addItem(new Person(position(), "Trevor the Turtle", R.drawable.turtle));
+        mClusterManager.addItem(new Marker(position(), "Trevor the Turtle", R.drawable.turtle));
 
         // http://www.flickr.com/photos/usnationalarchives/4726892651/
-        mClusterManager.addItem(new Person(position(), "Teach", R.drawable.teacher));
+        mClusterManager.addItem(new Marker(position(), "Teach", R.drawable.teacher));
     }
 
     private LatLng position() {
