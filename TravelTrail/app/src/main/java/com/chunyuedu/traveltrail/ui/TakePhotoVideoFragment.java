@@ -28,6 +28,7 @@ import android.widget.VideoView;
 
 import com.chunyuedu.traveltrail.R;
 import com.google.android.gms.maps.model.LatLng;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -58,7 +59,7 @@ public class TakePhotoVideoFragment extends Fragment {
     private ImageView imgPreview;
     private VideoView videoPreview;
 
-    final int THUMBSIZE = 16;
+    final int THUMBSIZE = 64;
 
 
 
@@ -78,6 +79,16 @@ public class TakePhotoVideoFragment extends Fragment {
 
         imgPreview = (ImageView) v.findViewById(R.id.imgPreview);
         videoPreview = (VideoView) v.findViewById(R.id.videoPreview);
+
+
+//        String tmpurl = "http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-66f69276-66d1-4dac-988c-95ae441c5691-IMG_20150804_102557.jpg";
+//        videoPreview.setVisibility(View.GONE);
+//
+//        imgPreview.setVisibility(View.VISIBLE);
+//        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+//        imageLoader.displayImage(tmpurl, imgPreview);
+
+
         Button btnCapturePicture, btnRecordVideo;
         btnCapturePicture = (Button) v.findViewById(R.id.takePhotoBtn);
         btnRecordVideo = (Button) v.findViewById(R.id.recordVideoBtn);
@@ -114,6 +125,7 @@ public class TakePhotoVideoFragment extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(),
                     R.string.noCamera,
                     Toast.LENGTH_LONG).show();
+
             // will close the app if the device does't have camera
             getActivity().finish();
         }
@@ -236,7 +248,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
         // downsizing image as it throws OutOfMemory Exception for larger
         // images
-        options.inSampleSize = 8;
+        options.inSampleSize = 4;
 
         final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
                 options);

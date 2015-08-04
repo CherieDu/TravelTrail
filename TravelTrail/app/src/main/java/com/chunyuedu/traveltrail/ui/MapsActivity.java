@@ -3,7 +3,9 @@ package com.chunyuedu.traveltrail.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,6 +15,7 @@ import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.chunyuedu.traveltrail.R;
@@ -24,6 +27,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseFile;
@@ -45,6 +50,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
 
@@ -128,19 +134,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < results.size(); i++){
 
             Log.i("1 result mediatype", String.valueOf(results.get(i).getString("mediatype")));
+            double theLat = results.get(i).getDouble("currentLatitude");
+            double theLon = results.get(i).getDouble("currentLongitude");
+            LatLng theLatLng = new LatLng(theLat, theLon);
             Log.i("currentLatitude", String.valueOf(results.get(i).getDouble("currentLatitude")));
 //            Log.i("currentLatitude", String.valueOf(results.get(i).getDate("mediaurl")));
             String tmpurl = results.get(i).getParseFile("mediaurl").getUrl();
             Log.i("tmpurl", tmpurl);
+            try {
+                Geocoder geo = new Geocoder(getApplicationContext(), Locale.getDefault());
+                List<Address> addresses = geo.getFromLocation(theLat, theLon, 1);
+                if (!addresses.isEmpty()) {
+                    if (addresses.size() > 0) {
+                        String customizeTitle = addresses.get(0).getFeatureName()
+                                + ", " + addresses.get(0).getLocality()
+                                + ", " + addresses.get(0).getAdminArea()
+                                + ", " + addresses.get(0).getCountryCode()
+                                + ", " + addresses.get(0).getPostalCode();
+
+
+                        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+                        Bitmap bmp = imageLoader.loadImageSync("http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-8345042c-87d3-404a-81e0-aac46b9fd791-IMG_20150801_150358.jpg");
+
+
+
+                        MarkerOptions theoptions = new MarkerOptions()
+                                .position(theLatLng)
+                                .title(customizeTitle);
+                        //.icon(BitmapDescriptorFactory.fromBitmap(bmp));
+                        map.addMarker(theoptions);
+
+
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 //            Bitmap bmp = getBitmapFromURL(tmpurl);
 //            bmp = Bitmap.createScaledBitmap(bmp, 50, 50, true);
 
 // //BitmapFactory.decodeStream(tmpurl.openConnection().getInputStream());
 
-            latLng = new LatLng(results.get(i).getDouble("currentLatitude"), results.get(i).getDouble("currentLongitude"));
-            MarkerOptions tmpOption = new MarkerOptions().position(latLng);
-            map.addMarker(tmpOption);
-
+//            latLng = new LatLng(results.get(i).getDouble("currentLatitude"), results.get(i).getDouble("currentLongitude"));
+//            MarkerOptions tmpOption = new MarkerOptions().position(latLng);
+//            map.addMarker(tmpOption);
+//
 
 //            try {
 //                bmp = BitmapFactory.decodeStream((InputStream)new URL(tmpurl).getContent());

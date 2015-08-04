@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.chunyuedu.traveltrail.R;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -48,12 +50,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
 
-        Parse.initialize(this, "ZRSAhX6BXMyV584UlBc19dIvIXCpDfa9taGqaHiF", "0OpODB30BZTKJpJL3vwbQk5AvEB1c0d5ajsyJyUm");
-//        ParseObject testObject = new ParseObject("TestObject");
-//        testObject.put("foo", "bar");
+        try{
+            // Enable Local Datastore.
+            Parse.enableLocalDatastore(getApplicationContext());
+            Parse.initialize(this, "ZRSAhX6BXMyV584UlBc19dIvIXCpDfa9taGqaHiF", "0OpODB30BZTKJpJL3vwbQk5AvEB1c0d5ajsyJyUm");
+        }
+        catch(IllegalStateException ise){
+            ise.printStackTrace();
+        }
+
+//        Parse.enableLocalDatastore(this);
+//
+//        Parse.initialize(this, "ZRSAhX6BXMyV584UlBc19dIvIXCpDfa9taGqaHiF", "0OpODB30BZTKJpJL3vwbQk5AvEB1c0d5ajsyJyUm");
+////        ParseObject testObject = new ParseObject("TestObject");
+////        testObject.put("foo", "bar");
 //        testObject.saveInBackground();
 //        ParseUser.logOut();
         ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
@@ -101,6 +112,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+        .build();
+        ImageLoader.getInstance().init(config);
+
     }
 
 
