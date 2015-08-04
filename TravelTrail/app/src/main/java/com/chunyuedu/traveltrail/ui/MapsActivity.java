@@ -1,13 +1,18 @@
 package com.chunyuedu.traveltrail.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.chunyuedu.traveltrail.R;
@@ -19,6 +24,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.json.JSONException;
 
@@ -27,6 +38,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
@@ -86,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //    }
 
     @Override
-    public void onMapReady(GoogleMap map) {
+    public void onMapReady(final GoogleMap map) {
         map.setMyLocationEnabled(true);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -99,21 +116,98 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+
+        List<ParseObject> results = getMarkers();
+
+        Log.i("Size of Markers", Integer.toString(results.size()));
+        LatLng latLng = null;
+        latLng = new LatLng(currentLatitude, currentLongitude);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        MarkerOptions options = new MarkerOptions().position(latLng);
+        map.addMarker(options);
+        for (int i = 0; i < results.size(); i++){
+
+            Log.i("1 result mediatype", String.valueOf(results.get(i).getString("mediatype")));
+            Log.i("currentLatitude", String.valueOf(results.get(i).getDouble("currentLatitude")));
+//            Log.i("currentLatitude", String.valueOf(results.get(i).getDate("mediaurl")));
+            String tmpurl = results.get(i).getParseFile("mediaurl").getUrl();
+            Log.i("tmpurl", tmpurl);
+//            Bitmap bmp = getBitmapFromURL(tmpurl);
+//            bmp = Bitmap.createScaledBitmap(bmp, 50, 50, true);
+
+// //BitmapFactory.decodeStream(tmpurl.openConnection().getInputStream());
+
+            latLng = new LatLng(results.get(i).getDouble("currentLatitude"), results.get(i).getDouble("currentLongitude"));
+            MarkerOptions tmpOption = new MarkerOptions().position(latLng);
+            map.addMarker(tmpOption);
+
+
+//            try {
+//                bmp = BitmapFactory.decodeStream((InputStream)new URL(tmpurl).getContent());
+//                bmp = Bitmap.createScaledBitmap(bmp, 50, 50, true);
+//                MarkerOptions tmpOption = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromBitmap(bmp));
+//                map.addMarker(tmpOption);
+//
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
+        }
+
+
+
+//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+//            Bitmap tmp = results.get(i).getParseFile("mediaurl");
+//            ParseFile masterImage = results.get(i).getParseFile("mediaurl");
+//            Uri imageUri = Uri.parse(masterImage.getUrl());
+
+
+
+
+//            MarkerOptions optionsTmp = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromPath();
+
+
+        }
+
+//        latLng = new LatLng(currentLatitude, currentLongitude);
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+//        MarkerOptions options = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
+//        .fromPath("/sdcard/Pictures/TravelTrail/IMG_20150729_183726.jpg"));
+//        map.addMarker(options);
+
 
 //        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
 //                Environment.DIRECTORY_PICTURES), IMAGE_DIRECTORY_NAME);
 
 
 
-        MarkerOptions options = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
-                .fromPath("/sdcard/Pictures/TravelTrail/IMG_20150729_183726.jpg"));
-                map.addMarker(options);
+//        MarkerOptions options = new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
+//                .fromPath("/sdcard/Pictures/TravelTrail/IMG_20150729_183726.jpg"));
+//                map.addMarker(options);
+
+
 
         //.icon(BitmapDescriptorFactory.fromFile("file:///storage/emulated/0/Pictures/TravelTrail/IMG_20150729_183726.jpg")
 
 
+//    }
+
+
+    private List<ParseObject> getMarkers() {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Marker");
+        query.whereEqualTo("username", currentUser.getUsername());
+        List<ParseObject> results = new ArrayList<ParseObject>();
+
+        try {
+            results=query.find();
+        } catch (com.parse.ParseException e) {
+            e.printStackTrace();
+        }
+
+        return results;
     }
 
 

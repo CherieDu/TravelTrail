@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -56,6 +57,8 @@ public class TakePhotoVideoFragment extends Fragment {
 
     private ImageView imgPreview;
     private VideoView videoPreview;
+
+    final int THUMBSIZE = 16;
 
 
 
@@ -254,12 +257,23 @@ public class TakePhotoVideoFragment extends Fragment {
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
+        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(fileUri.getPath()),
+                THUMBSIZE, THUMBSIZE);
+        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+        ThumbImage.compress(Bitmap.CompressFormat.JPEG, 10, stream2);
+        byte[] data3 = stream.toByteArray();
+        String timeStamp2 = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        ParseFile file2 = new ParseFile("IMG_Thumbnail" + timeStamp2 + ".jpg", data3);
+        file2.saveInBackground();
+//        ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeByteArray(data3, 40, 4), THUMBSIZE, THUMBSIZE);
+
 
         ParseObject marker = new ParseObject("Marker");
         ParseUser currentUser = ParseUser.getCurrentUser();
         marker.put("mediatype", "image");
         marker.put("username",currentUser.getUsername());
         marker.put("mediaurl", file);
+        marker.put("thumbnail", file2);
         marker.put("currentLatitude", currentLatitude);
         marker.put("currentLongitude", currentLongitude);
 
