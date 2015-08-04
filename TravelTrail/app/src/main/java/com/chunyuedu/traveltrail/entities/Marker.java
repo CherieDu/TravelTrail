@@ -14,7 +14,7 @@ public class Marker implements ClusterItem {
 //    private String zipcode;
     private final LatLng mPosition;
     public final String fileName;
-    public final String pictureResource;
+    public final String pictureResourceURL;
 //    private String thrumbnail;
     private boolean showup;
 
@@ -23,13 +23,13 @@ public class Marker implements ClusterItem {
         this.fileName = fileName;
         this.mPosition = position;
         profilePhoto = pictureLocalResource;
-        pictureResource = "";
+        pictureResourceURL = "";
     }
 
 
-    public Marker(LatLng position, String fileName, String pictureResource, boolean showup, int pictureLocalResource) {
+    public Marker(LatLng position, String fileName, int pictureLocalResource, String pictureResource, boolean showup) {
         this.fileName = fileName;
-        this.pictureResource = pictureResource;
+        this.pictureResourceURL = pictureResource;
         this.mPosition = position;
         this.showup = showup;
         profilePhoto = pictureLocalResource;

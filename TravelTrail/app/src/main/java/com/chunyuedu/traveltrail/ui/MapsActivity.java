@@ -3,6 +3,7 @@ package com.chunyuedu.traveltrail.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.chunyuedu.traveltrail.R;
 import com.chunyuedu.traveltrail.entities.Marker;
 import com.chunyuedu.traveltrail.entities.Person;
+import com.chunyuedu.traveltrail.entities.UrlHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -46,6 +48,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.json.JSONException;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,6 +65,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
 
@@ -276,8 +283,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .getMap();
             // Check if we were successful in obtaining the map.«
             if (mMap != null) {
+                setUpMap();
                 startDemo();
-//                setUpMap();
             }
         }
     }
@@ -288,8 +295,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     protected void startDemo() {
 
-
-        setUpMap();
 
         List<ParseObject> results = getMarkers();
         Log.i("Size of Markers", Integer.toString(results.size()));
@@ -313,7 +318,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double theLat = parseObject.getDouble("currentLatitude");
             double theLon = parseObject.getDouble("currentLongitude");
             LatLng theLatLng = new LatLng(theLat, theLon);
-            mClusterManager.addItem(new Marker(theLatLng, "Walter", R.drawable.walter));
+            String tmpurl = parseObject.getParseFile("mediaurl").getUrl();
+            mClusterManager.addItem(new Marker(theLatLng, "Walter", R.drawable.walter, tmpurl, true));
         }
 
 
@@ -410,33 +416,74 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onBeforeClusterItemRendered(Marker marker, MarkerOptions markerOptions) {
             // Draw a single person.
             // Set the info window to show their name.
-            mImageView.setImageResource(marker.profilePhoto);
+            //        String tmpurl = "http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-66f69276-66d1-4dac-988c-95ae441c5691-IMG_20150804_102557.jpg";
+//        videoPreview.setVisibility(View.GONE);
+//
+//        imgPreview.setVisibility(View.VISIBLE);
+            ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+            imageLoader.displayImage(marker.pictureResourceURL, mImageView);
+            Log.i("onBeforeClusterItemRend", marker.pictureResourceURL);
+
+//            mImageView.setImageResource(marker.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(marker.fileName);
         }
 
-        @Override
-        protected void onBeforeClusterRendered(Cluster<Marker> cluster, MarkerOptions markerOptions) {
-            // Draw multiple people.
-            // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
-            List<Drawable> profilePhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
-            int width = mDimension;
-            int height = mDimension;
+//        @Override
+//        protected void onBeforeClusterRendered(Cluster<Marker> cluster, MarkerOptions markerOptions) {
+//            // Draw multiple people.
+//            // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
+//            List<Drawable> pictureResourceURLs = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
+//            int width = mDimension;
+//            int height = mDimension;
+//
+//            for (Marker m : cluster.getItems()) {
+//                // Draw 4 at most.
+//                if (pictureResourceURLs.size() == 4) break;
+//
+//                UrlHelper urlHelper = new UrlHelper();
+////                Drawable drawable = urlHelper.getImageDrawable(m.pictureResourceURL);
+//
+////                Drawable drawable = getDrawableFromUrl(m.pictureResourceURL);
+////                Drawable drawable = mImageView.getDrawable();
+//                Drawable drawable = getResources().getDrawable(m.profilePhoto);
+//                drawable.setBounds(0, 0, width, height);
+//                pictureResourceURLs.add(drawable);
+//
+//            }
+//            MultiDrawable multiDrawable = new MultiDrawable(pictureResourceURLs);
+//            multiDrawable.setBounds(0, 0, width, height);
+//
+//            mClusterImageView.setImageDrawable(multiDrawable);
+//            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
+//            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+//        }
 
-            for (Marker m : cluster.getItems()) {
-                // Draw 4 at most.
-                if (profilePhotos.size() == 4) break;
-                Drawable drawable = getResources().getDrawable(m.profilePhoto);
-                drawable.setBounds(0, 0, width, height);
-                profilePhotos.add(drawable);
-            }
-            MultiDrawable multiDrawable = new MultiDrawable(profilePhotos);
-            multiDrawable.setBounds(0, 0, width, height);
+        public Drawable drawableFromUrl(String url) throws IOException {
+            Bitmap x;
 
-            mClusterImageView.setImageDrawable(multiDrawable);
-            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.connect();
+            InputStream input = connection.getInputStream();
+
+            x = BitmapFactory.decodeStream(input);
+            return new BitmapDrawable(x);
         }
+
+
+        public Drawable getDrawableFromUrl(URL url) {
+            try {
+                InputStream is = url.openStream();
+                Drawable d = Drawable.createFromStream(is, "src");
+                return d;
+            } catch (MalformedURLException e) {
+                // e.printStackTrace();
+            } catch (IOException e) {
+                // e.printStackTrace();
+            }
+            return null;
+        }
+
 
         @Override
         protected boolean shouldRenderAsCluster(Cluster cluster) {
@@ -486,4 +533,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return mRandom.nextDouble() * (max - min) + min;
     }
 
+
+
+
+
+
 }
+
+
