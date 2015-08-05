@@ -326,6 +326,7 @@ public class MapsActivity extends FragmentActivity {
             LatLng theLatLng = new LatLng(theLat, theLon);
             String tmpurl = parseObject.getParseFile("mediaurl").getUrl();
             String customizeTitle = null;
+            String filname = parseObject.getString("filename");
             try {
                 Geocoder geo = new Geocoder(getApplicationContext(), Locale.getDefault());
                 List<Address> addresses = geo.getFromLocation(theLat, theLon, 1);
@@ -358,7 +359,7 @@ public class MapsActivity extends FragmentActivity {
             }
 
 
-            mClusterManager.addItem(new Marker(theLatLng, customizeTitle, R.drawable.walter, tmpurl, true));
+            mClusterManager.addItem(new Marker(theLatLng, customizeTitle, R.drawable.walter,filname, tmpurl, true));
         }
 
 
@@ -461,7 +462,7 @@ public class MapsActivity extends FragmentActivity {
 //
 //        imgPreview.setVisibility(View.VISIBLE);
             ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-            imageLoader.displayImage(marker.pictureResourceURL, mImageView, new SimpleImageLoadingListener(){});
+            imageLoader.displayImage(marker.pictureResourceURL, mImageView);
             Log.i("onBeforeClusterItemRend", marker.pictureResourceURL);
 
 //            mImageView.setImageResource(marker.profilePhoto);
@@ -469,7 +470,7 @@ public class MapsActivity extends FragmentActivity {
 
 
 
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(marker.fileName);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(marker.customizedTitle);
         }
 
 //        @Override
@@ -517,42 +518,10 @@ public class MapsActivity extends FragmentActivity {
 
     }
 
-    private void addItems() {
-        // http://www.flickr.com/photos/sdasmarchives/5036248203/
-        mClusterManager.addItem(new Marker(position(), "Walter", R.drawable.walter));
 
-        // http://www.flickr.com/photos/usnationalarchives/4726917149/
-        mClusterManager.addItem(new Marker(position(), "Gran", R.drawable.gran));
 
-        // http://www.flickr.com/photos/nypl/3111525394/
-        mClusterManager.addItem(new Marker(position(), "Ruth", R.drawable.ruth));
 
-        // http://www.flickr.com/photos/smithsonian/2887433330/
-        mClusterManager.addItem(new Marker(position(), "Stefan", R.drawable.stefan));
 
-        // http://www.flickr.com/photos/library_of_congress/2179915182/
-        mClusterManager.addItem(new Marker(position(), "Mechanic", R.drawable.mechanic));
-
-        // http://www.flickr.com/photos/nationalmediamuseum/7893552556/
-        mClusterManager.addItem(new Marker(position(), "Yeats", R.drawable.yeats));
-
-        // http://www.flickr.com/photos/sdasmarchives/5036231225/
-        mClusterManager.addItem(new Marker(position(), "John", R.drawable.john));
-
-        // http://www.flickr.com/photos/anmm_thecommons/7694202096/
-        mClusterManager.addItem(new Marker(position(), "Trevor the Turtle", R.drawable.turtle));
-
-        // http://www.flickr.com/photos/usnationalarchives/4726892651/
-        mClusterManager.addItem(new Marker(position(), "Teach", R.drawable.teacher));
-    }
-
-    private LatLng position() {
-        return new LatLng(random(40.4435262, -79.9444015), random(0.148271, -0.3514683));
-    }
-
-    private double random(double min, double max) {
-        return mRandom.nextDouble() * (max - min) + min;
-    }
 
 
 }

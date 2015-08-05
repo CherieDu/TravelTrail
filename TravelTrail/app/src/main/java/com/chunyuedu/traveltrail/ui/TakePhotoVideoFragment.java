@@ -285,7 +285,7 @@ public class TakePhotoVideoFragment extends Fragment {
         marker.put("mediatype", "image");
         marker.put("username",currentUser.getUsername());
         marker.put("mediaurl", file);
-        marker.put("fileName", file.getName());
+        marker.put("filename", file.getName());
         marker.put("thumbnail", file2);
         marker.put("currentLatitude", currentLatitude);
         marker.put("currentLongitude", currentLongitude);
