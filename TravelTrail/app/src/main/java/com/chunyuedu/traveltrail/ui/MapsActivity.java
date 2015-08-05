@@ -3,6 +3,7 @@ package com.chunyuedu.traveltrail.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -22,13 +23,15 @@ import android.widget.Toast;
 
 import com.chunyuedu.traveltrail.R;
 import com.chunyuedu.traveltrail.entities.Marker;
-import com.chunyuedu.traveltrail.entities.Person;
+import com.chunyuedu.traveltrail.entities.ParseMarkerObject;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
@@ -63,9 +66,9 @@ public class MapsActivity extends FragmentActivity {
     String provider;
     private static final String IMAGE_DIRECTORY_NAME = "TravelTrail";
 
-    private ClusterManager<Marker> mClusterManager;
+    private ClusterManager<ParseMarkerObject> mClusterManager;
     private Random mRandom = new Random(1984);
-    List<ParseObject> results  = null;
+    List<ParseMarkerObject> results  = null;
 
 
     @Override
@@ -117,23 +120,23 @@ public class MapsActivity extends FragmentActivity {
 //    }
 
 
-    public boolean onClusterClick(Cluster<Person> cluster) {
+    public boolean onClusterClick(Cluster<ParseMarkerObject> cluster) {
         // Show a toast with some info when the cluster is clicked.
-        String firstName = cluster.getItems().iterator().next().name;
-        Toast.makeText(this, cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
+        String customizedTitle = cluster.getItems().iterator().next().getString("customizedTitle");
+        Toast.makeText(this, cluster.getSize() + " (including " + customizedTitle + ")", Toast.LENGTH_SHORT).show();
         return true;
     }
 
-    public void onClusterInfoWindowClick(Cluster<Person> cluster) {
+    public void onClusterInfoWindowClick(Cluster<ParseMarkerObject> cluster) {
         // Does nothing, but you could go to a list of the users.
     }
 
-    public boolean onClusterItemClick(Person item) {
+    public boolean onClusterItemClick(ParseMarkerObject item) {
         // Does nothing, but you could go into the user's profile page, for example.
         return false;
     }
 
-    public void onClusterItemInfoWindowClick(Person item) {
+    public void onClusterItemInfoWindowClick(ParseMarkerObject item) {
         // Does nothing, but you could go into the user's profile page, for example.
     }
 
@@ -184,16 +187,11 @@ public class MapsActivity extends FragmentActivity {
 
 //                        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
 //                        Bitmap bmp = imageLoader.loadImageSync("http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-8345042c-87d3-404a-81e0-aac46b9fd791-IMG_20150801_150358.jpg");
-
-
-
                         MarkerOptions theoptions = new MarkerOptions()
                                 .position(theLatLng)
                                 .title(customizeTitle);
                         //.icon(BitmapDescriptorFactory.fromBitmap(bmp));
                         map.addMarker(theoptions);
-
-
                     }
                 }
             } catch (IOException e) {
@@ -263,11 +261,11 @@ public class MapsActivity extends FragmentActivity {
 //    }
 
 
-    private List<ParseObject> getMarkers() {
+    private List<ParseMarkerObject> getMarkers() {
         ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Marker");
+        ParseQuery<ParseMarkerObject> query = ParseQuery.getQuery("Marker");
         query.whereEqualTo("username", currentUser.getUsername());
-        List<ParseObject> results = new ArrayList<ParseObject>();
+        List<ParseMarkerObject> results = new ArrayList<ParseMarkerObject>();
 
         try {
             results=query.find();
@@ -302,14 +300,14 @@ public class MapsActivity extends FragmentActivity {
     protected void startDemo() {
 
 
-        List<ParseObject> results = getMarkers();
+//        List<ParseObject> results = getMarkers();
         Log.i("Size of Markers", Integer.toString(results.size()));
 
 
 //        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(40.4435262, -79.9444015), 9.5f));
 
-        mClusterManager = new ClusterManager<Marker>(this, getMap());
-        mClusterManager.setRenderer(new MarkerRenderer());
+        mClusterManager = new ClusterManager<ParseMarkerObject>(this, getMap());
+        mClusterManager.setRenderer(new ParseObjectRenderer());
         getMap().setOnCameraChangeListener(mClusterManager);
         getMap().setOnMarkerClickListener(mClusterManager);
         getMap().setOnInfoWindowClickListener(mClusterManager);
@@ -319,27 +317,32 @@ public class MapsActivity extends FragmentActivity {
 //        mClusterManager.setOnClusterItemInfoWindowClickListener(this);
 
 //        addItems();
+        // Instantiates a new Polyline object and adds points to define a rectangle
+        PolylineOptions rectOptions = new PolylineOptions();
+//                .add(new LatLng(37.35, -122.0))
+//                .add(new LatLng(37.45, -122.0))  // North of the previous point, but at the same longitude
+//                .add(new LatLng(37.45, -122.2))  // Same latitude, and 30km to the west
+//                .add(new LatLng(37.35, -122.2))  // Same longitude, and 16km to the south
+//                .add(new LatLng(37.35, -122.0)); // Closes the polyline.
 
-        for (ParseObject parseObject : results){
-            double theLat = parseObject.getDouble("currentLatitude");
-            double theLon = parseObject.getDouble("currentLongitude");
+// Get back the mutable Polyline
+
+        for (ParseMarkerObject parseObject : results){
+
+            double theLat = parseObject.getDouble("latitude");
+            double theLon = parseObject.getDouble("longitude");
             LatLng theLatLng = new LatLng(theLat, theLon);
+            rectOptions.add(theLatLng).width(20)
+                    .color(Color.BLUE)
+                    .geodesic(true);
             String tmpurl = parseObject.getParseFile("mediaurl").getUrl();
             String customizeTitle = null;
             String filname = parseObject.getString("filename");
+            List<Address> addresses = new ArrayList<Address>();
             try {
                 Geocoder geo = new Geocoder(getApplicationContext(), Locale.getDefault());
-                List<Address> addresses = geo.getFromLocation(theLat, theLon, 1);
-                if (!addresses.isEmpty()) {
-                    if (addresses.size() > 0) {
-                        customizeTitle = addresses.get(0).getFeatureName()
-                                + ", " + addresses.get(0).getLocality()
-                                + ", " + addresses.get(0).getAdminArea()
-                                + ", " + addresses.get(0).getCountryCode()
-                                + ", " + addresses.get(0).getPostalCode();
-
-
-
+                addresses = geo.getFromLocation(theLat, theLon, 1);
+                if (!addresses.isEmpty() && (addresses.size() > 0)) {
 //                        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
 //                        Bitmap bmp = imageLoader.loadImageSync("http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-8345042c-87d3-404a-81e0-aac46b9fd791-IMG_20150801_150358.jpg");
 
@@ -350,17 +353,23 @@ public class MapsActivity extends FragmentActivity {
 //                                .title(customizeTitle);
 //                        //.icon(BitmapDescriptorFactory.fromBitmap(bmp));
 //                        mMap.addMarker(theoptions);
+                    mClusterManager.addItem(parseObject);
 
+                }else{
+                    mClusterManager.addItem(parseObject);
 
-                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-
-            mClusterManager.addItem(new Marker(theLatLng, customizeTitle, 0,filname, tmpurl, true));
+            mClusterManager.addItem(parseObject);
         }
+
+        Polyline polyline = mMap.addPolyline(rectOptions);
+//        polyline.width(25)
+//                .color(Color.BLUE)
+//                .geodesic(true);
 
 
         mClusterManager.cluster();
@@ -431,14 +440,14 @@ public class MapsActivity extends FragmentActivity {
      * Draws profile photos inside markers (using IconGenerator).
      * When there are multiple people in the cluster, draw multiple photos (using MultiDrawable).
      */
-    private class MarkerRenderer extends DefaultClusterRenderer<Marker> {
+    private class ParseObjectRenderer extends DefaultClusterRenderer<ParseMarkerObject> {
         private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
         private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
         private final ImageView mImageView;
         private final ImageView mClusterImageView;
         private final int mDimension;
 
-        public MarkerRenderer() {
+        public ParseObjectRenderer() {
             super(getApplicationContext(), getMap(), mClusterManager);
 
             View multiProfile = getLayoutInflater().inflate(R.layout.multi_profile, null);
@@ -454,7 +463,7 @@ public class MapsActivity extends FragmentActivity {
         }
 
         @Override
-        protected void onBeforeClusterItemRendered(Marker marker, MarkerOptions markerOptions) {
+        protected void onBeforeClusterItemRendered(ParseMarkerObject parseObject, MarkerOptions markerOptions) {
             // Draw a single person.
             // Set the info window to show their name.
             //        String tmpurl = "http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-66f69276-66d1-4dac-988c-95ae441c5691-IMG_20150804_102557.jpg";
@@ -462,15 +471,15 @@ public class MapsActivity extends FragmentActivity {
 //
 //        imgPreview.setVisibility(View.VISIBLE);
             ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-            imageLoader.displayImage(marker.pictureResourceURL, mImageView);
-            Log.i("onBeforeClusterItemRend", marker.pictureResourceURL);
+            imageLoader.displayImage(parseObject.getString("mediaurl"), mImageView);
+            Log.i("onBeforeClusterItemRend", parseObject.getString("mediaurl"));
 
 //            mImageView.setImageResource(marker.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();
 
 
 
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(marker.customizedTitle);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(parseObject.getString("customizedTitle"));
         }
 
 //        @Override
@@ -513,15 +522,7 @@ public class MapsActivity extends FragmentActivity {
             return cluster.getSize() > 1;
         }
 
-
-
-
     }
-
-
-
-
-
 
 
 }

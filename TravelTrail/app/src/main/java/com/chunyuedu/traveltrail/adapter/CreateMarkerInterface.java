@@ -1,10 +1,13 @@
 package com.chunyuedu.traveltrail.adapter;
-
-import android.location.Location;
-
 /**
  * Created by ChunyueDu on 7/20/15.
  */
+import android.location.Address;
+import android.location.Location;
+
+import com.google.android.gms.maps.model.LatLng;
+
+
 public interface CreateMarkerInterface {
-    public void BuildMarker(Location mLocation, String filename);
+    public void BuildAMarker(LatLng position, String filename, boolean showup, Address oneAddress, byte[] data);
 }

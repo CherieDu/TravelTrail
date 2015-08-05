@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.chunyuedu.traveltrail.R;
+import com.chunyuedu.traveltrail.adapter.BuildMarker;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.Parse;
@@ -31,6 +32,9 @@ import com.parse.ui.ParseLoginBuilder;
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
+    public static BuildMarker buildmarkers;
+
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -50,7 +54,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        buildmarkers = new BuildMarker();
         try{
             // Enable Local Datastore.
             Parse.enableLocalDatastore(getApplicationContext());
@@ -211,10 +215,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 case 0:
                     return new TakePhotoVideoFragment();
                 case 1:
-                    return new MapsFragment();
-                case 2:
                     return new GalleryFragment();
-                case 3:
+                case 2:
                     return new AccountFragment();
                 default:
                     break;
@@ -228,7 +230,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 3;
         }
 
         @Override
@@ -238,10 +240,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 case 0:
                     return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
                     return getString(R.string.title_section3).toUpperCase(l);
-                case 3:
+                case 2:
                     return getString(R.string.title_section4).toUpperCase(l);
             }
             return null;

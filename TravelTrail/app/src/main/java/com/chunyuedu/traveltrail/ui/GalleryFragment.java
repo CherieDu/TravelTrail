@@ -4,14 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -22,7 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.chunyuedu.traveltrail.R;
-import com.chunyuedu.traveltrail.entities.Constants;
 import com.chunyuedu.traveltrail.entities.Marker;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,8 +30,6 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,8 +46,6 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
 
     }
 
@@ -75,7 +67,6 @@ public class GalleryFragment extends Fragment {
         });
         return rootView;
 
-
     }
     @Override
     public void onDestroy() {
@@ -83,11 +74,9 @@ public class GalleryFragment extends Fragment {
         AnimateFirstDisplayListener.displayedImages.clear();
     }
 
-
-
     protected void startMarkerActivity(ParseObject marker) {
         Intent intent = new Intent(getActivity(), Marker.class);
-        intent.putExtra(Marker.IMAGE_POSITION, (Serializable) marker);
+        intent.putExtra(Marker.IMAGE_POSITION, marker.getObjectId());
         startActivity(intent);
     }
 
@@ -96,12 +85,6 @@ public class GalleryFragment extends Fragment {
     }
 
     private static class ImageAdapter extends BaseAdapter {
-
-//        private static final String[] IMAGE_URLS = Constants.IMAGES;
-
-
-
-
 
         private LayoutInflater inflater;
         private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();

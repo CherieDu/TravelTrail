@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Camera;
 import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.ThumbnailUtils;
@@ -27,7 +28,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.chunyuedu.traveltrail.R;
+import com.chunyuedu.traveltrail.adapter.BuildMarker;
+import com.chunyuedu.traveltrail.entities.Marker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -37,6 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -256,8 +261,7 @@ public class TakePhotoVideoFragment extends Fragment {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] data2 = stream.toByteArray();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        ParseFile file = new ParseFile("IMG_" + timeStamp + ".jpg", data2);
-        file.saveInBackground();
+
 
         LocationManager locationManager;
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -268,30 +272,33 @@ public class TakePhotoVideoFragment extends Fragment {
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
+        LatLng currentLatLng = new LatLng(currentLatitude, currentLongitude);
+        Geocoder geo = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
+        List<Address> addresses = new ArrayList<Address>();
 
-        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(fileUri.getPath()),
-                THUMBSIZE, THUMBSIZE);
-        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
-        ThumbImage.compress(Bitmap.CompressFormat.JPEG, 10, stream2);
-        byte[] data3 = stream.toByteArray();
-        String timeStamp2 = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        ParseFile file2 = new ParseFile("IMG_Thumbnail" + timeStamp2 + ".jpg", data3);
-        file2.saveInBackground();
+        try {
+            addresses = geo.getFromLocation(currentLatitude, currentLongitude, 1);
+            if (!addresses.isEmpty() && addresses.size() > 0) {
+                BuildMarker.get().BuildAMarker(currentLatLng, "IMG_" + timeStamp + ".jpg", true, addresses.get(0), data2);
+            }else{
+                BuildMarker.get().BuildAMarker(currentLatLng, "IMG_" + timeStamp + ".jpg", true, null, data2);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(fileUri.getPath()),
+//                THUMBSIZE, THUMBSIZE);
+//        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+//        ThumbImage.compress(Bitmap.CompressFormat.JPEG, 10, stream2);
+//        byte[] data3 = stream.toByteArray();
+//        String timeStamp2 = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//        ParseFile file2 = new ParseFile("IMG_Thumbnail" + timeStamp2 + ".jpg", data3);
+//        file2.saveInBackground();
 //        ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeByteArray(data3, 40, 4), THUMBSIZE, THUMBSIZE);
 
 
-        ParseObject marker = new ParseObject("Marker");
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        marker.put("mediatype", "image");
-        marker.put("username",currentUser.getUsername());
-        marker.put("mediaurl", file);
-        marker.put("filename", file.getName());
-        marker.put("thumbnail", file2);
-        marker.put("currentLatitude", currentLatitude);
-        marker.put("currentLongitude", currentLongitude);
-
-
-        marker.saveInBackground();
     }
 
     /** Create a file Uri for saving an image or video */
