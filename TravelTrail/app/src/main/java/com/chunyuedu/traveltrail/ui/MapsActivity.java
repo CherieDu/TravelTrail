@@ -11,9 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Environment;
+
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,11 +23,8 @@ import android.widget.Toast;
 import com.chunyuedu.traveltrail.R;
 import com.chunyuedu.traveltrail.entities.Marker;
 import com.chunyuedu.traveltrail.entities.Person;
-import com.chunyuedu.traveltrail.entities.UrlHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -39,29 +34,19 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.json.JSONException;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -69,7 +54,7 @@ import java.util.Random;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback{
+public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -80,7 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private ClusterManager<Marker> mClusterManager;
     private Random mRandom = new Random(1984);
-
+    List<ParseObject> results  = null;
 
 
     @Override
@@ -91,7 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        MapFragment mapFragment = (MapFragment) getFragmentManager()
 //                .findFragmentById(R.id.map);
 //        mapFragment.getMapAsync(this);
-
+        results = getMarkers();
         setUpMapIfNeeded();
 
     }
@@ -131,7 +116,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                .position(sydney));
 //    }
 
-    @Override
+
+    public boolean onClusterClick(Cluster<Person> cluster) {
+        // Show a toast with some info when the cluster is clicked.
+        String firstName = cluster.getItems().iterator().next().name;
+        Toast.makeText(this, cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    public void onClusterInfoWindowClick(Cluster<Person> cluster) {
+        // Does nothing, but you could go to a list of the users.
+    }
+
+    public boolean onClusterItemClick(Person item) {
+        // Does nothing, but you could go into the user's profile page, for example.
+        return false;
+    }
+
+    public void onClusterItemInfoWindowClick(Person item) {
+        // Does nothing, but you could go into the user's profile page, for example.
+    }
+
+
     public void onMapReady(final GoogleMap map) {
         map.setMyLocationEnabled(true);
 
@@ -146,7 +152,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
-        List<ParseObject> results = getMarkers();
+
 
         Log.i("Size of Markers", Integer.toString(results.size()));
         LatLng latLng = null;
@@ -176,8 +182,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 + ", " + addresses.get(0).getPostalCode();
 
 
-                        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-                        Bitmap bmp = imageLoader.loadImageSync("http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-8345042c-87d3-404a-81e0-aac46b9fd791-IMG_20150801_150358.jpg");
+//                        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+//                        Bitmap bmp = imageLoader.loadImageSync("http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-8345042c-87d3-404a-81e0-aac46b9fd791-IMG_20150801_150358.jpg");
 
 
 
@@ -319,7 +325,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double theLon = parseObject.getDouble("currentLongitude");
             LatLng theLatLng = new LatLng(theLat, theLon);
             String tmpurl = parseObject.getParseFile("mediaurl").getUrl();
-            mClusterManager.addItem(new Marker(theLatLng, "Walter", R.drawable.walter, tmpurl, true));
+            String customizeTitle = null;
+            try {
+                Geocoder geo = new Geocoder(getApplicationContext(), Locale.getDefault());
+                List<Address> addresses = geo.getFromLocation(theLat, theLon, 1);
+                if (!addresses.isEmpty()) {
+                    if (addresses.size() > 0) {
+                        customizeTitle = addresses.get(0).getFeatureName()
+                                + ", " + addresses.get(0).getLocality()
+                                + ", " + addresses.get(0).getAdminArea()
+                                + ", " + addresses.get(0).getCountryCode()
+                                + ", " + addresses.get(0).getPostalCode();
+
+
+
+//                        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+//                        Bitmap bmp = imageLoader.loadImageSync("http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-8345042c-87d3-404a-81e0-aac46b9fd791-IMG_20150801_150358.jpg");
+
+
+
+//                        MarkerOptions theoptions = new MarkerOptions()
+//                                .position(theLatLng)
+//                                .title(customizeTitle);
+//                        //.icon(BitmapDescriptorFactory.fromBitmap(bmp));
+//                        mMap.addMarker(theoptions);
+
+
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            mClusterManager.addItem(new Marker(theLatLng, customizeTitle, R.drawable.walter, tmpurl, true));
         }
 
 
@@ -352,8 +391,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng latLng = null;
         latLng = new LatLng(currentLatitude, currentLongitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-        MarkerOptions options = new MarkerOptions().position(latLng);
-        mMap.addMarker(options);
+//        MarkerOptions options = new MarkerOptions().position(latLng);
+//        mMap.addMarker(options);
+
 //        mMap.setMyLocationEnabled(true);
 //
 //        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -421,11 +461,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //
 //        imgPreview.setVisibility(View.VISIBLE);
             ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-            imageLoader.displayImage(marker.pictureResourceURL, mImageView);
+            imageLoader.displayImage(marker.pictureResourceURL, mImageView, new SimpleImageLoadingListener(){});
             Log.i("onBeforeClusterItemRend", marker.pictureResourceURL);
 
 //            mImageView.setImageResource(marker.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();
+
+
+
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(marker.fileName);
         }
 
@@ -447,6 +490,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 ////                Drawable drawable = getDrawableFromUrl(m.pictureResourceURL);
 ////                Drawable drawable = mImageView.getDrawable();
 //                Drawable drawable = getResources().getDrawable(m.profilePhoto);
+//
 //                drawable.setBounds(0, 0, width, height);
 //                pictureResourceURLs.add(drawable);
 //
@@ -459,30 +503,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
 //        }
 
-        public Drawable drawableFromUrl(String url) throws IOException {
-            Bitmap x;
 
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.connect();
-            InputStream input = connection.getInputStream();
-
-            x = BitmapFactory.decodeStream(input);
-            return new BitmapDrawable(x);
-        }
-
-
-        public Drawable getDrawableFromUrl(URL url) {
-            try {
-                InputStream is = url.openStream();
-                Drawable d = Drawable.createFromStream(is, "src");
-                return d;
-            } catch (MalformedURLException e) {
-                // e.printStackTrace();
-            } catch (IOException e) {
-                // e.printStackTrace();
-            }
-            return null;
-        }
 
 
         @Override
@@ -532,10 +553,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double random(double min, double max) {
         return mRandom.nextDouble() * (max - min) + min;
     }
-
-
-
-
 
 
 }

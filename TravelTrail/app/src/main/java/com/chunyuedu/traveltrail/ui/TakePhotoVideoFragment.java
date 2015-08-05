@@ -59,7 +59,7 @@ public class TakePhotoVideoFragment extends Fragment {
     private ImageView imgPreview;
     private VideoView videoPreview;
 
-    final int THUMBSIZE = 64;
+    final int THUMBSIZE = 16;
 
 
 
@@ -248,7 +248,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
         // downsizing image as it throws OutOfMemory Exception for larger
         // images
-        options.inSampleSize = 4;
+        options.inSampleSize = 16;
 
         final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
                 options);
@@ -285,8 +285,7 @@ public class TakePhotoVideoFragment extends Fragment {
         marker.put("mediatype", "image");
         marker.put("username",currentUser.getUsername());
         marker.put("mediaurl", file);
-        marker.put("filename", file.getName());
-
+        marker.put("fileName", file.getName());
         marker.put("thumbnail", file2);
         marker.put("currentLatitude", currentLatitude);
         marker.put("currentLongitude", currentLongitude);
