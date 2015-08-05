@@ -20,7 +20,6 @@
     <string name="action_marker">Marker</string>
     <string name="action_map">Map</string>
 
-<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_set_marker">SetMarkerActivity</string>
     <string name="title_activity_camera">CameraActivity</string>
@@ -29,5 +28,10 @@
     <string name="parse_client_key">0OpODB30BZTKJpJL3vwbQk5AvEB1c0d5ajsyJyUm</string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="menu_item_clear_memory_cache">Clear memory cache</string>
+    <string name="menu_item_clear_disc_cache">Clear disc cache</string>
+    <string name="menu_item_pause_on_scroll">Pause on scroll</string>
+    <string name="menu_item_pause_on_fling">Pause on fling</string>
+    <string name="descr_image">Image</string>
 
 </resources>

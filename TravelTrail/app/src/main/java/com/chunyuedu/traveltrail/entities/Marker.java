@@ -20,6 +20,10 @@ public class Marker implements ClusterItem {
     private boolean showup;
 
     public final int profilePhoto;
+
+    public static final String IMAGE_POSITION = "com.nostra13.example.universalimageloader.IMAGE_POSITION";
+
+
     public Marker(LatLng position, String fileName, int pictureLocalResource) {
         this.fileName = fileName;
         this.mPosition = position;

@@ -359,7 +359,7 @@ public class MapsActivity extends FragmentActivity {
             }
 
 
-            mClusterManager.addItem(new Marker(theLatLng, customizeTitle, R.drawable.walter,filname, tmpurl, true));
+            mClusterManager.addItem(new Marker(theLatLng, customizeTitle, 0,filname, tmpurl, true));
         }
 
 

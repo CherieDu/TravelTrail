@@ -137,23 +137,44 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        switch (id){
+            case R.id.action_settings:
+                return true;
+            case R.id.action_map:
+                Intent map =
+                        new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(map); // start the AddEditContact Activity
+                return true;
+            case R.id.action_marker:
+                Intent marker =
+                        new Intent(MainActivity.this, MarkerActivity.class);
+                startActivity(marker); // start the AddEditContact Activity
+                return true;
+            case R.id.item_clear_memory_cache:
+                ImageLoader.getInstance().clearMemoryCache();
+                return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.item_clear_disc_cache:
+                ImageLoader.getInstance().clearDiskCache();
+                return true;
         }
-        if (id == R.id.action_marker) {
-            Intent marker =
-                    new Intent(MainActivity.this, MarkerActivity.class);
-            startActivity(marker); // start the AddEditContact Activity
-            return true;
-        }
-        if (id == R.id.action_map) {
-            Intent marker =
-                    new Intent(MainActivity.this, MapsActivity.class);
-            startActivity(marker); // start the AddEditContact Activity
-            return true;
-        }
+
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//        if (id == R.id.action_marker) {
+//            Intent marker =
+//                    new Intent(MainActivity.this, MarkerActivity.class);
+//            startActivity(marker); // start the AddEditContact Activity
+//            return true;
+//        }
+//        if (id == R.id.action_map) {
+//            Intent marker =
+//                    new Intent(MainActivity.this, MapsActivity.class);
+//            startActivity(marker); // start the AddEditContact Activity
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
