@@ -1,6 +1,7 @@
 package com.chunyuedu.traveltrail.DBLayout;
 
 import com.chunyuedu.traveltrail.entities.Marker;
+import com.chunyuedu.traveltrail.entities.ParseMarkerObject;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -16,7 +17,7 @@ public class ParseDatabaseHelper implements ParseDBInterface{
         ParseFile file = new ParseFile(marker.getFileName(), data);
         file.saveInBackground();
 
-        ParseObject parseMarker = new ParseObject("Marker");
+        ParseMarkerObject parseMarker = new ParseMarkerObject();
         ParseUser currentUser = ParseUser.getCurrentUser();
         parseMarker.put("mediatype", "image");
         parseMarker.put("username",currentUser.getUsername());

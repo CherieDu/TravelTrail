@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.chunyuedu.traveltrail.R;
 import com.chunyuedu.traveltrail.entities.Marker;
+import com.chunyuedu.traveltrail.entities.ParseMarkerObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -41,7 +42,7 @@ import java.util.List;
 public class GalleryFragment extends Fragment {
     protected AbsListView listView;
     public static final int INDEX = 0;
-    public static List<ParseObject> markers = null;
+    public static List<ParseMarkerObject> markers = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,11 +172,11 @@ public class GalleryFragment extends Fragment {
         }
     }
 
-    private static List<ParseObject> getMarkers() {
+    private static List<ParseMarkerObject> getMarkers() {
         ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Marker");
+        ParseQuery<ParseMarkerObject> query = ParseQuery.getQuery(ParseMarkerObject.class);
         query.whereEqualTo("username", currentUser.getUsername());
-        List<ParseObject> results = new ArrayList<ParseObject>();
+        List<ParseMarkerObject> results = new ArrayList<ParseMarkerObject>();
 
         try {
             results=query.find();

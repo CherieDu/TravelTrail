@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.chunyuedu.traveltrail.R;
 import com.chunyuedu.traveltrail.adapter.BuildMarker;
+import com.chunyuedu.traveltrail.entities.ParseMarkerObject;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.Parse;
@@ -58,6 +59,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         try{
             // Enable Local Datastore.
             Parse.enableLocalDatastore(getApplicationContext());
+            ParseObject.registerSubclass(ParseMarkerObject.class);
+
             Parse.initialize(this, "ZRSAhX6BXMyV584UlBc19dIvIXCpDfa9taGqaHiF", "0OpODB30BZTKJpJL3vwbQk5AvEB1c0d5ajsyJyUm");
         }
         catch(IllegalStateException ise){

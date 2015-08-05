@@ -263,7 +263,7 @@ public class MapsActivity extends FragmentActivity {
 
     private List<ParseMarkerObject> getMarkers() {
         ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseQuery<ParseMarkerObject> query = ParseQuery.getQuery("Marker");
+        ParseQuery<ParseMarkerObject> query = ParseQuery.getQuery(ParseMarkerObject.class);
         query.whereEqualTo("username", currentUser.getUsername());
         List<ParseMarkerObject> results = new ArrayList<ParseMarkerObject>();
 
@@ -327,6 +327,7 @@ public class MapsActivity extends FragmentActivity {
 
 // Get back the mutable Polyline
 
+
         for (ParseMarkerObject parseObject : results){
 
             double theLat = parseObject.getDouble("latitude");
@@ -335,33 +336,33 @@ public class MapsActivity extends FragmentActivity {
             rectOptions.add(theLatLng).width(20)
                     .color(Color.BLUE)
                     .geodesic(true);
-            String tmpurl = parseObject.getParseFile("mediaurl").getUrl();
-            String customizeTitle = null;
-            String filname = parseObject.getString("filename");
-            List<Address> addresses = new ArrayList<Address>();
-            try {
-                Geocoder geo = new Geocoder(getApplicationContext(), Locale.getDefault());
-                addresses = geo.getFromLocation(theLat, theLon, 1);
-                if (!addresses.isEmpty() && (addresses.size() > 0)) {
-//                        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-//                        Bitmap bmp = imageLoader.loadImageSync("http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-8345042c-87d3-404a-81e0-aac46b9fd791-IMG_20150801_150358.jpg");
-
-
-
-//                        MarkerOptions theoptions = new MarkerOptions()
-//                                .position(theLatLng)
-//                                .title(customizeTitle);
-//                        //.icon(BitmapDescriptorFactory.fromBitmap(bmp));
-//                        mMap.addMarker(theoptions);
-                    mClusterManager.addItem(parseObject);
-
-                }else{
-                    mClusterManager.addItem(parseObject);
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            String tmpurl = parseObject.getParseFile("mediaurl").getUrl();
+//            String customizeTitle = null;
+//            String filname = parseObject.getString("filename");
+//            List<Address> addresses = new ArrayList<Address>();
+//            try {
+//                Geocoder geo = new Geocoder(getApplicationContext(), Locale.getDefault());
+//                addresses = geo.getFromLocation(theLat, theLon, 1);
+//                if (!addresses.isEmpty() && (addresses.size() > 0)) {
+////                        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+////                        Bitmap bmp = imageLoader.loadImageSync("http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-8345042c-87d3-404a-81e0-aac46b9fd791-IMG_20150801_150358.jpg");
+//
+//
+//
+////                        MarkerOptions theoptions = new MarkerOptions()
+////                                .position(theLatLng)
+////                                .title(customizeTitle);
+////                        //.icon(BitmapDescriptorFactory.fromBitmap(bmp));
+////                        mMap.addMarker(theoptions);
+//                    mClusterManager.addItem(parseObject);
+//
+//                }else{
+//                    mClusterManager.addItem(parseObject);
+//
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
             mClusterManager.addItem(parseObject);
         }
@@ -472,7 +473,6 @@ public class MapsActivity extends FragmentActivity {
 //        imgPreview.setVisibility(View.VISIBLE);
             ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
             imageLoader.displayImage(parseObject.getString("mediaurl"), mImageView);
-            Log.i("onBeforeClusterItemRend", parseObject.getString("mediaurl"));
 
 //            mImageView.setImageResource(marker.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();
