@@ -481,45 +481,34 @@ public class MapsActivity extends FragmentActivity {
 
             mImageView.setImageBitmap(bmp);
             Bitmap icon = mIconGenerator.makeIcon();
-
-
-
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(parseObject.getString("customizedTitle"));
         }
 
-//        @Override
-//        protected void onBeforeClusterRendered(Cluster<Marker> cluster, MarkerOptions markerOptions) {
-//            // Draw multiple people.
-//            // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
-//            List<Drawable> pictureResourceURLs = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
-//            int width = mDimension;
-//            int height = mDimension;
-//
-//            for (Marker m : cluster.getItems()) {
-//                // Draw 4 at most.
-//                if (pictureResourceURLs.size() == 4) break;
-//
-//                UrlHelper urlHelper = new UrlHelper();
-////                Drawable drawable = urlHelper.getImageDrawable(m.pictureResourceURL);
-//
-////                Drawable drawable = getDrawableFromUrl(m.pictureResourceURL);
-////                Drawable drawable = mImageView.getDrawable();
-//                Drawable drawable = getResources().getDrawable(m.profilePhoto);
-//
-//                drawable.setBounds(0, 0, width, height);
-//                pictureResourceURLs.add(drawable);
-//
-//            }
-//            MultiDrawable multiDrawable = new MultiDrawable(pictureResourceURLs);
-//            multiDrawable.setBounds(0, 0, width, height);
-//
-//            mClusterImageView.setImageDrawable(multiDrawable);
-//            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
-//            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
-//        }
+        @Override
+        protected void onBeforeClusterRendered(Cluster<ParseMarkerObject> cluster, MarkerOptions markerOptions) {
+            // Draw multiple people.
+            // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
+            List<Drawable> profiles = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
+            int width = mDimension;
+            int height = mDimension;
 
+            for (ParseMarkerObject myParseMarkerObject : cluster.getItems()) {
+                // Draw 4 at most.
+                if (profiles.size() == 4) break;
 
+                Bitmap imagebitmap = BitmapFactory.decodeByteArray(myParseMarkerObject.getBytes("data"), 0, myParseMarkerObject.getBytes("data").length);
+                Drawable drawable = new BitmapDrawable(imagebitmap);
+                drawable.setBounds(0, 0, width, height);
+                profiles.add(drawable);
 
+            }
+            MultiDrawable multiDrawable = new MultiDrawable(profiles);
+            multiDrawable.setBounds(0, 0, width, height);
+
+            mClusterImageView.setImageDrawable(multiDrawable);
+            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+        }
 
         @Override
         protected boolean shouldRenderAsCluster(Cluster cluster) {
