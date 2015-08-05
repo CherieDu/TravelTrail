@@ -1,4 +1,4 @@
-package com.chunyuedu.traveltrail.DBLayout;
+package com.chunyuedu.traveltrail.DatabaseConnection;
 
 import com.chunyuedu.traveltrail.entities.Marker;
 

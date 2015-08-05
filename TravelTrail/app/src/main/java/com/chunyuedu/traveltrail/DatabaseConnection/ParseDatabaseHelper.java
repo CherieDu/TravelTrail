@@ -1,9 +1,8 @@
-package com.chunyuedu.traveltrail.DBLayout;
+package com.chunyuedu.traveltrail.DatabaseConnection;
 
 import com.chunyuedu.traveltrail.entities.Marker;
 import com.chunyuedu.traveltrail.entities.ParseMarkerObject;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 /**
@@ -32,6 +31,7 @@ public class ParseDatabaseHelper implements ParseDBInterface{
         parseMarker.put("postalCode", marker.getPostalCode());
         parseMarker.put("latitude", marker.getLatitude());
         parseMarker.put("longitude", marker.getLongitude());
+        parseMarker.put("data", data);
 //        parseMarker.put("latlng", marker.getmPosition());
         parseMarker.put("state", marker.getState());
 //        parseMarker.put("currentLatitude", currentLatitude);

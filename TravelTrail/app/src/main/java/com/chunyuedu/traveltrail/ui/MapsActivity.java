@@ -471,10 +471,15 @@ public class MapsActivity extends FragmentActivity {
 //        videoPreview.setVisibility(View.GONE);
 //
 //        imgPreview.setVisibility(View.VISIBLE);
-            ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-            imageLoader.displayImage(parseObject.getString("mediaurl"), mImageView);
+
+
+//            ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+//            imageLoader.displayImage(parseObject.getString("mediaurl"), mImageView);
 
 //            mImageView.setImageResource(marker.profilePhoto);
+            Bitmap bmp = BitmapFactory.decodeByteArray(parseObject.getBytes("data"), 0, parseObject.getBytes("data").length);
+
+            mImageView.setImageBitmap(bmp);
             Bitmap icon = mIconGenerator.makeIcon();
 
 

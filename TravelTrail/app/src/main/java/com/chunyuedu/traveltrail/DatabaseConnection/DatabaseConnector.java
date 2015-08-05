@@ -1,4 +1,4 @@
-package com.chunyuedu.traveltrail.DBLayout;
+package com.chunyuedu.traveltrail.DatabaseConnection;
 
 import android.content.ContentValues;
 import android.content.Context;
