@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.chunyuedu.traveltrail"
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -46,4 +46,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:7.5.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'com.google.maps.android:android-maps-utils:0.4+'
+    compile 'com.android.support:support-v4:21.0.+'
 }

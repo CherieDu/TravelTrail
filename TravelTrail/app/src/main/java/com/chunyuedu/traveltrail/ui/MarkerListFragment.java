@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 
@@ -43,6 +44,7 @@ public class MarkerListFragment extends Fragment{
     protected AbsListView listView;
     public static final int INDEX = 0;
     public static List<ParseMarkerObject> markers = null;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,15 @@ public class MarkerListFragment extends Fragment{
         markers = getMarkers();
         Log.i("markers.size():", String.valueOf(markers.size()));
         View rootView = inflater.inflate(R.layout.fragment_gallery, container, false);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.fragment_gallery_swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+            }
+        });
+
         listView = (ListView) rootView.findViewById(R.id.list);
         ((ListView) listView).setAdapter(new ImageAdapter(getActivity()));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -191,5 +202,22 @@ public class MarkerListFragment extends Fragment{
 
         return results;
     }
+
+    // fake a network operation's delayed response
+    // this is just for demonstration, not real code!
+    private void refreshContent(){
+        markers = getMarkers();
+        ((ListView) listView).setAdapter(new ImageAdapter(getActivity()));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startMarkerActivity(markers.get(position));
+            }
+        });
+        mSwipeRefreshLayout.setRefreshing(false);
+
+    }
+
+
 
 }
