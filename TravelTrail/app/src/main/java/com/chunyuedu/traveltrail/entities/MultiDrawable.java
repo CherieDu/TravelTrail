@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chunyuedu.traveltrail.ui;
+package com.chunyuedu.traveltrail.entities;
 
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * Draws up to four other drawables.
  */
+
 public class MultiDrawable extends Drawable {
 
     private final List<Drawable> mDrawables;

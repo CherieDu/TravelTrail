@@ -9,5 +9,5 @@ import com.google.android.gms.maps.model.LatLng;
 
 
 public interface CreateMarkerInterface {
-    public void BuildAMarker(LatLng position, String filename, boolean showup, Address oneAddress, byte[] data);
+    public void BuildAMarker(LatLng position, String filename, boolean showup, Address oneAddress, byte[] data, String type);
 }

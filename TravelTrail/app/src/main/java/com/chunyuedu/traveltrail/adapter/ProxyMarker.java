@@ -19,7 +19,7 @@ public abstract class ProxyMarker {
     }
 
 
-    public void BuildAMarker(LatLng position, String filename, boolean showup, Address oneAddress, byte[] data){
+    public void BuildAMarker(LatLng position, String filename, boolean showup, Address oneAddress, byte[] data, String type){
         Marker marker = new Marker(position, filename, showup, oneAddress);
         if(markers == null) {
             markers = new LinkedHashMap<String, Marker>();

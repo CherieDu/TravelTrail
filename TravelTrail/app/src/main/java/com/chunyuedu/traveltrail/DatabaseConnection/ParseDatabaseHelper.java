@@ -10,7 +10,6 @@ import com.parse.ParseUser;
  */
 public class ParseDatabaseHelper implements ParseDBInterface{
 
-
     @Override
     public void save(Marker marker, byte[] data) {
         ParseFile file = new ParseFile(marker.getFileName(), data);

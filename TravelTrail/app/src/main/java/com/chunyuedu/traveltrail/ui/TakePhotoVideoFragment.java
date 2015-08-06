@@ -39,6 +39,8 @@ import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -223,6 +225,7 @@ public class TakePhotoVideoFragment extends Fragment {
 //                Toast.makeText(getActivity(), "Video saved to:\n" +
 //                        data.getData(), Toast.LENGTH_LONG).show();
                 previewVideo();
+                saveVideoMarker();
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // User cancelled the video capture
             } else {
@@ -263,9 +266,9 @@ public class TakePhotoVideoFragment extends Fragment {
         try {
             addresses = geo.getFromLocation(currentLatitude, currentLongitude, 1);
             if (!addresses.isEmpty() && addresses.size() > 0) {
-                BuildMarker.get().BuildAMarker(currentLatLng, "IMG_" + timeStamp + ".jpg", true, addresses.get(0), data2);
+                BuildMarker.get().BuildAMarker(currentLatLng, "IMG_" + timeStamp + ".jpg", true, addresses.get(0), data2, "image");
             }else{
-                BuildMarker.get().BuildAMarker(currentLatLng, "IMG_" + timeStamp + ".jpg", true, null, data2);
+                BuildMarker.get().BuildAMarker(currentLatLng, "IMG_" + timeStamp + ".jpg", true, null, data2, "image");
             }
 
         } catch (IOException e) {
@@ -284,6 +287,71 @@ public class TakePhotoVideoFragment extends Fragment {
 
 
     }
+
+    private void saveVideoMarker(){
+        // bimatp factory
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        // downsizing image as it throws OutOfMemory Exception for larger
+        // images
+        options.inSampleSize = 4;
+
+//        final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
+//                options);
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//        byte[] data2 = stream.toByteArray();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        FileInputStream fis = null;
+        byte[] videoBytes = null;
+        try {
+            fis = new FileInputStream(fileUri.getPath());
+            byte[] buf = new byte[1024];
+            int n;
+            while (-1 != (n = fis.read(buf)))
+                baos.write(buf, 0, n);
+
+            videoBytes = baos.toByteArray(); //this is the video in bytes.
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        LocationManager locationManager;
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+
+
+// Getting Current Location and add a marker
+        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        double currentLatitude = location.getLatitude();
+        double currentLongitude = location.getLongitude();
+        LatLng currentLatLng = new LatLng(currentLatitude, currentLongitude);
+        Geocoder geo = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
+        List<Address> addresses = new ArrayList<Address>();
+
+        try {
+            addresses = geo.getFromLocation(currentLatitude, currentLongitude, 1);
+            if (!addresses.isEmpty() && addresses.size() > 0) {
+                BuildMarker.get().BuildAMarker(currentLatLng, "VID_" + timeStamp + ".mp4", true, addresses.get(0), videoBytes, "video");
+            }else{
+                BuildMarker.get().BuildAMarker(currentLatLng, "VID_" + timeStamp + ".mp4", true, null, videoBytes, "video");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 
     /** Create a file Uri for saving an image or video */
     private static Uri getOutputMediaFileUri(int type){
@@ -326,7 +394,6 @@ public class TakePhotoVideoFragment extends Fragment {
         return mediaFile;
     }
 
-
     /*
      * Display image from a path to ImageView
      */
@@ -363,6 +430,7 @@ public class TakePhotoVideoFragment extends Fragment {
             videoPreview.setVisibility(View.VISIBLE);
             videoPreview.setVideoPath(fileUri.getPath());
             // start playing
+
             videoPreview.start();
         } catch (Exception e) {
             e.printStackTrace();

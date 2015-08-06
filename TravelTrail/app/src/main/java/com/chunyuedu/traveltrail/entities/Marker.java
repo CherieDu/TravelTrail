@@ -11,7 +11,7 @@ import java.util.List;
  * Created by ChunyueDu on 7/20/15.
  */
 
-public class Marker implements ClusterItem {
+public class Marker {
 
     private final String address;
     private final String city;
@@ -27,10 +27,7 @@ public class Marker implements ClusterItem {
 
     private boolean showUp;
 
-
-
-
-    public static final String IMAGE_POSITION = "com.nostra13.example.universalimageloader.IMAGE_POSITION";
+    public static final String IMAGE_POSITION = "com.chunyuedu.traveltrail.entities.marker.IMAGE_POSITION";
 
     public Marker(LatLng position, String filename, boolean showup, Address oneAddress) {
         this.fileName = filename;
@@ -63,16 +60,6 @@ public class Marker implements ClusterItem {
 
         }
 
-    }
-
-
-
-
-
-
-    @Override
-    public LatLng getPosition() {
-        return mPosition;
     }
 
 

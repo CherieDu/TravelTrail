@@ -15,13 +15,6 @@
         android:layout_height="505dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="1">
-        <!-- To display picture taken -->
-        <ImageView
-            android:id="@+id/imgPreview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:visibility="gone"
-            android:layout_gravity="center" />
 
         <!-- To preview video recorded -->
         <VideoView
@@ -30,6 +23,15 @@
             android:layout_height="fill_parent"
             android:visibility="gone"
             android:layout_gravity="center" />
+        <!-- To display picture taken -->
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+
+
     </LinearLayout>
 
     <LinearLayout

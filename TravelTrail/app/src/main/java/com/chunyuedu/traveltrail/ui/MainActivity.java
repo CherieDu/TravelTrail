@@ -153,11 +153,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                         new Intent(MainActivity.this, MapsActivity.class);
                 startActivity(map); // start the AddEditContact Activity
                 return true;
-            case R.id.action_marker:
-                Intent marker =
-                        new Intent(MainActivity.this, MarkerPagerActivity.class);
-                startActivity(marker); // start the AddEditContact Activity
-                return true;
             case R.id.item_clear_memory_cache:
                 ImageLoader.getInstance().clearMemoryCache();
                 return true;
