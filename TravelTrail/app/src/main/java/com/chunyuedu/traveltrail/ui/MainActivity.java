@@ -17,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.chunyuedu.traveltrail.R;
 import com.chunyuedu.traveltrail.adapter.BuildMarker;
@@ -154,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 return true;
             case R.id.action_marker:
                 Intent marker =
-                        new Intent(MainActivity.this, MarkerActivity.class);
+                        new Intent(MainActivity.this, MarkerPagerActivity.class);
                 startActivity(marker); // start the AddEditContact Activity
                 return true;
             case R.id.item_clear_memory_cache:
@@ -218,7 +217,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 case 0:
                     return new TakePhotoVideoFragment();
                 case 1:
-                    return new GalleryFragment();
+                    return new MarkerListFragment();
                 case 2:
                     return new AccountFragment();
                 default:

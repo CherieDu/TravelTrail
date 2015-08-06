@@ -17,4 +17,11 @@ public class ParseMarkerObject extends ParseObject implements ClusterItem{
     public LatLng getPosition() {
         return new LatLng(this.getDouble("latitude"), this.getDouble("longitude"));
     }
+
+
+    public static class Extra {
+        public static final String IMAGE_POSITION = "com.chunyuedu.traveltrail.entities.IMAGE_POSITION";
+    }
+
+
 }

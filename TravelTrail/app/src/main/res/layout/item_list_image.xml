@@ -14,7 +14,7 @@
 
 	<LinearLayout
 		android:orientation="vertical"
-		android:layout_width="match_parent"
+		android:layout_width="243dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="center"
 		android:gravity="bottom">
@@ -37,5 +37,17 @@
 			android:textSize="18sp"
 			android:text="Time" />
 	</LinearLayout>
+
+	<CheckBox
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/showUpCheckBox"
+		android:gravity="center"
+		android:layout_alignParentRight="true"
+		android:enabled="false"
+		android:focusable="false"
+		android:padding="4dp"
+		android:layout_gravity="center"
+		android:checked="false" />
 
 </LinearLayout>

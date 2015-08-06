@@ -265,6 +265,7 @@ public class MapsActivity extends FragmentActivity {
         ParseUser currentUser = ParseUser.getCurrentUser();
         ParseQuery<ParseMarkerObject> query = ParseQuery.getQuery(ParseMarkerObject.class);
         query.whereEqualTo("username", currentUser.getUsername());
+        query.whereEqualTo("showup", true);
         List<ParseMarkerObject> results = new ArrayList<ParseMarkerObject>();
 
         try {
@@ -517,8 +518,6 @@ public class MapsActivity extends FragmentActivity {
         }
 
     }
-
-
 }
 
 

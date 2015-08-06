@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by ChunyueDu on 7/20/15.
  */
+
 public class Marker implements ClusterItem {
 
     private final String address;

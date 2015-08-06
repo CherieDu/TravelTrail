@@ -1,6 +1,5 @@
 package com.chunyuedu.traveltrail.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,12 +13,12 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.chunyuedu.traveltrail.R;
-import com.chunyuedu.traveltrail.entities.Marker;
 import com.chunyuedu.traveltrail.entities.ParseMarkerObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -28,7 +27,6 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import java.text.SimpleDateFormat;
@@ -39,7 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class GalleryFragment extends Fragment {
+public class MarkerListFragment extends Fragment {
     protected AbsListView listView;
     public static final int INDEX = 0;
     public static List<ParseMarkerObject> markers = null;
@@ -75,9 +73,9 @@ public class GalleryFragment extends Fragment {
         AnimateFirstDisplayListener.displayedImages.clear();
     }
 
-    protected void startMarkerActivity(ParseObject marker) {
-        Intent intent = new Intent(getActivity(), Marker.class);
-        intent.putExtra(Marker.IMAGE_POSITION, marker.getObjectId());
+    protected void startMarkerActivity(ParseMarkerObject marker) {
+        Intent intent = new Intent(getActivity(), MarkerPagerActivity.class);
+        intent.putExtra(ParseMarkerObject.Extra.IMAGE_POSITION, marker.getObjectId());
         startActivity(intent);
     }
 
@@ -130,6 +128,7 @@ public class GalleryFragment extends Fragment {
                 holder.time = (TextView) view.findViewById(R.id.time);
                 holder.location = (TextView) view.findViewById(R.id.location);
                 holder.image = (ImageView) view.findViewById(R.id.image);
+                holder.checkBox = (CheckBox) view.findViewById(R.id.showUpCheckBox);
                 view.setTag(holder);
             } else {
                 holder = (ViewHolder) view.getTag();
@@ -140,8 +139,9 @@ public class GalleryFragment extends Fragment {
             SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String date = DATE_FORMAT.format(createDate);
             holder.time.setText(date);
-            holder.location.setText(markers.get(position).getString("filename"));
-            Log.i("mediaurl", markers.get(position).getParseFile("mediaurl").getUrl());
+            holder.location.setText(markers.get(position).getString("address") + " " +markers.get(position).getString("filename"));
+            holder.checkBox.setChecked(markers.get(position).getBoolean("showup"));
+//            Log.i("mediaurl", markers.get(position).getParseFile("mediaurl").getUrl());
 
             ImageLoader.getInstance().displayImage(markers.get(position).getParseFile("mediaurl").getUrl(), holder.image, options, animateFirstListener);
 
@@ -153,6 +153,7 @@ public class GalleryFragment extends Fragment {
         TextView time;
         TextView location;
         ImageView image;
+        CheckBox checkBox;
     }
 
     private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
