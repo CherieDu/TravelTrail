@@ -1,5 +1,6 @@
 package com.chunyuedu.traveltrail.ui;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -18,8 +20,7 @@ import com.chunyuedu.traveltrail.R;
 import com.chunyuedu.traveltrail.entities.ParseMarkerObject;
 import com.parse.GetCallback;
 import com.parse.ParseQuery;
-
-
+import com.parse.ParseUser;
 
 
 public class MarkerFragment extends Fragment {
@@ -34,6 +35,7 @@ public class MarkerFragment extends Fragment {
     TextView mTextViewCountry;
     TextView mTextViewAddress;
     TextView mTextViewState;
+    Button mDeleteButton;
 
 
 
@@ -65,6 +67,7 @@ public class MarkerFragment extends Fragment {
         mTextViewCountry = (TextView) v.findViewById(R.id.countryValue);
         mTextViewAddress = (TextView) v.findViewById(R.id.addressValue);
         mTextViewState = (TextView) v.findViewById(R.id.stateValue);
+        mDeleteButton = (Button)v.findViewById(R.id.deleteMarkerBtn);
         mTextViewCity.setText(mParseMarkerObject.getString("city"));
         mTextViewCountry.setText(mParseMarkerObject.getString("country"));
         mTextViewAddress.setText(mParseMarkerObject.getString("address"));
@@ -100,6 +103,19 @@ public class MarkerFragment extends Fragment {
 
             }
         });
+
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mParseMarkerObject.deleteInBackground();
+
+                getActivity().finish();
+//                ParseUser.logOut();
+//                getActivity().finish();
+                // Perform action on click
+            }
+        });
+
+
         // Inflate the layout for this fragment
         return v;
     }

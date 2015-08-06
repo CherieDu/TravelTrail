@@ -38,7 +38,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     private TextView email;
     private Button logoutBtn;
     private ImageView mImageView;
-    private Button imageBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
