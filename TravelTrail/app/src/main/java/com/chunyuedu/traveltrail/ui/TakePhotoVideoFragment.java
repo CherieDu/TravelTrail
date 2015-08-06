@@ -64,7 +64,7 @@ public class TakePhotoVideoFragment extends Fragment {
     private ImageView imgPreview;
     private VideoView videoPreview;
 
-    final int THUMBSIZE = 16;
+    final int THUMBSIZE = 64;
 
 
 
@@ -253,7 +253,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
         // downsizing image as it throws OutOfMemory Exception for larger
         // images
-        options.inSampleSize = 16;
+        options.inSampleSize = 4;
 
         final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
                 options);
@@ -358,7 +358,7 @@ public class TakePhotoVideoFragment extends Fragment {
 
             // downsizing image as it throws OutOfMemory Exception for larger
             // images
-            options.inSampleSize = 8;
+            options.inSampleSize = 4;
 
             final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
                     options);

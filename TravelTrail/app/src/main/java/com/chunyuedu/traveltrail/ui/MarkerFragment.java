@@ -1,7 +1,7 @@
 package com.chunyuedu.traveltrail.ui;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,20 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chunyuedu.traveltrail.R;
 import com.chunyuedu.traveltrail.entities.ParseMarkerObject;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseQuery;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.util.UUID;
+
 
 
 public class MarkerFragment extends Fragment {
@@ -32,6 +29,12 @@ public class MarkerFragment extends Fragment {
 
     ParseMarkerObject mParseMarkerObject;
     CheckBox mShopUpCheckBox;
+    ImageView mImageView;
+    TextView mTextViewCity;
+    TextView mTextViewCountry;
+    TextView mTextViewAddress;
+    TextView mTextViewState;
+
 
 
     public static MarkerFragment newInstance(String markerID) {
@@ -58,8 +61,20 @@ public class MarkerFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_marker, parent, false);
         String markerId = (String)getArguments().getSerializable(EXTRA_MARKER_ID);
         mParseMarkerObject = getOneMarker(markerId);
-//        Log.i("mParseMarkerObject oncreate", mParseMarkerObject.getObjectId());
-        Log.i("mParseMarkerObject showup", String.valueOf(mParseMarkerObject.getBoolean("showup")));
+        mTextViewCity = (TextView) v.findViewById(R.id.cityValue);
+        mTextViewCountry = (TextView) v.findViewById(R.id.countryValue);
+        mTextViewAddress = (TextView) v.findViewById(R.id.addressValue);
+        mTextViewState = (TextView) v.findViewById(R.id.stateValue);
+        mTextViewCity.setText(mParseMarkerObject.getString("city"));
+        mTextViewCountry.setText(mParseMarkerObject.getString("country"));
+        mTextViewAddress.setText(mParseMarkerObject.getString("address"));
+        mTextViewState.setText(mParseMarkerObject.getString("state"));
+
+        mImageView = (ImageView)v.findViewById(R.id.imageViewMarker);
+
+        Bitmap bmp = BitmapFactory.decodeByteArray(mParseMarkerObject.getBytes("data"), 0, mParseMarkerObject.getBytes("data").length);
+
+        mImageView.setImageBitmap(bmp);
 
         mShopUpCheckBox = (CheckBox)v.findViewById(R.id.checkBox);
 
@@ -99,8 +114,7 @@ public class MarkerFragment extends Fragment {
         } catch (com.parse.ParseException e) {
             e.printStackTrace();
         }
-        Log.i("getOneMarker", markerId);
-        Log.i("getOneMarker2", resultMarker.getObjectId());
+
         return resultMarker;
 
     }

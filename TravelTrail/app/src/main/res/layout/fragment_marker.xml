@@ -16,7 +16,7 @@
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView2"
+            android:id="@+id/imageViewMarker"
             android:layout_gravity="center_horizontal"
             android:minHeight="260dp"
             android:src="@drawable/download" />
@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5000 Forbes Ave"
-                android:id="@+id/adressValue"
+                android:id="@+id/addressValue"
                 android:layout_weight="1"
                 android:textSize="20dp"
                 android:textStyle="bold"
@@ -126,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="US"
-                android:id="@+id/CountryValue"
+                android:id="@+id/countryValue"
                 android:layout_weight="1"
                 android:textSize="20dp"
                 android:textStyle="bold"
