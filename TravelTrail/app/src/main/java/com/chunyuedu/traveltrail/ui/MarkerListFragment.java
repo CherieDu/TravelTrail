@@ -1,8 +1,10 @@
 package com.chunyuedu.traveltrail.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -37,7 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class MarkerListFragment extends Fragment {
+public class MarkerListFragment extends Fragment{
     protected AbsListView listView;
     public static final int INDEX = 0;
     public static List<ParseMarkerObject> markers = null;
@@ -67,6 +69,7 @@ public class MarkerListFragment extends Fragment {
         return rootView;
 
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -91,12 +94,13 @@ public class MarkerListFragment extends Fragment {
         private DisplayImageOptions options;
 
         ImageAdapter(Context context) {
+            markers = getMarkers();
             inflater = LayoutInflater.from(context);
 
             options = new DisplayImageOptions.Builder()
-                    .showImageOnLoading(R.drawable.download)
-                    .showImageForEmptyUri(R.drawable.download2)
-                    .showImageOnFail(R.drawable.gran)
+                    .showImageOnLoading(R.drawable.ic_stub)
+                    .showImageForEmptyUri(R.drawable.ic_empty)
+                    .showImageOnFail(R.drawable.ic_error)
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
                     .considerExifParams(true)
@@ -187,6 +191,5 @@ public class MarkerListFragment extends Fragment {
 
         return results;
     }
-
 
 }

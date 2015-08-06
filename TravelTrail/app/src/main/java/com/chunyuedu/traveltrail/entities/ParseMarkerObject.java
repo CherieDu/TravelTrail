@@ -6,7 +6,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
 /**
- * Created by ChunyueDu on 8/5/15.
+ * Created by ChunyueDu on 8/1/15.
  */
 @ParseClassName("MyMarker")
 public class ParseMarkerObject extends ParseObject implements ClusterItem{

@@ -10,15 +10,16 @@
         android:layout_gravity="left|top">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="189dp"
+            android:layout_height="252dp"
             android:id="@+id/avatar"
             android:layout_gravity="center_horizontal"
             android:minWidth="200dp"
             android:minHeight="200dp"
             android:padding="10dp"
             android:longClickable="false"
-            android:src="@drawable/download2" />
+            android:src="@drawable/download2"
+            android:onClick="loadImagefromGallery"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -41,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Timeriver"
-                android:id="@+id/textView"
+                android:id="@+id/userName"
                 android:layout_weight="1"
                 android:padding="10dp" />
         </LinearLayout>
@@ -67,12 +68,18 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="myemail@gmail.com"
-                android:id="@+id/textView2"
+                android:id="@+id/userEmail"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
                 android:padding="10dp" />
 
         </LinearLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:id="@+id/logoutBtn" />
 
     </LinearLayout>
 </FrameLayout>

@@ -49,13 +49,6 @@ public class MarkerPagerActivity extends FragmentActivity {
                 break;
             }
         }
-
-
-//        setContentView(R.layout.fragment_marker);
-//        String markerId = (String)getIntent().getStringExtra(ParseMarkerObject.Extra.IMAGE_POSITION);
-//        theMarker = getOneMarker(markerId);
-
-
     }
 
 

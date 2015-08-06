@@ -66,9 +66,6 @@ public class TakePhotoVideoFragment extends Fragment {
 
     final int THUMBSIZE = 64;
 
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,15 +81,6 @@ public class TakePhotoVideoFragment extends Fragment {
 
         imgPreview = (ImageView) v.findViewById(R.id.imgPreview);
         videoPreview = (VideoView) v.findViewById(R.id.videoPreview);
-
-
-//        String tmpurl = "http://files.parsetfss.com/e6d83aff-fc05-4a4e-895a-53e7bcd85620/tfss-66f69276-66d1-4dac-988c-95ae441c5691-IMG_20150804_102557.jpg";
-//        videoPreview.setVisibility(View.GONE);
-//
-//        imgPreview.setVisibility(View.VISIBLE);
-//        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-//        imageLoader.displayImage(tmpurl, imgPreview);
-
 
         Button btnCapturePicture, btnRecordVideo;
         btnCapturePicture = (Button) v.findViewById(R.id.takePhotoBtn);
@@ -134,7 +122,6 @@ public class TakePhotoVideoFragment extends Fragment {
             // will close the app if the device does't have camera
             getActivity().finish();
         }
-
 
         return v;
     }

@@ -6,7 +6,7 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 /**
- * Created by ChunyueDu on 8/5/15.
+ * Created by ChunyueDu on 8/1/15.
  */
 public class ParseDatabaseHelper implements ParseDBInterface{
 

@@ -103,8 +103,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
+
                 actionBar.setSelectedNavigationItem(position);
             }
+
         });
 
         // For each of the sections in the app, add a tab to the action bar.
@@ -189,7 +191,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
+
+
         mViewPager.setCurrentItem(tab.getPosition());
+
     }
 
     @Override
@@ -198,6 +203,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // Reload current fragment
+
     }
 
     /**
