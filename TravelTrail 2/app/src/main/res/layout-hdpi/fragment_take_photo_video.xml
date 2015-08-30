@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.chunyuedu.traveltrail.ui.TakePhotoVideoFragment"
+    android:orientation="vertical"
+    android:id="@+id/takephotovideo"
+    android:weightSum="1"
+    android:gravity="bottom">
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="505dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1">
+
+        <!-- To preview video recorded -->
+        <VideoView
+            android:id="@+id/videoPreview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+        <!-- To display picture taken -->
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1">
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/take_photo"
+            android:id="@+id/takePhotoBtn"
+            android:layout_gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/recordVideoBtn"
+            android:layout_alignStart="@+id/recordVideoBtn"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/record_a_video"
+            android:id="@+id/recordVideoBtn"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</LinearLayout>
